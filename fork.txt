@@ -1,0 +1,84 @@
+Fork()
+Fork system call is used for creating a new process, which is called child process, which runs concurrently with the process that makes the fork() call (parent process). After a new child process is created, both processes will execute the next instruction following the fork() system call. A child process uses the same pc(program counter), same CPU registers, same open files which use in the parent process.
+It takes no parameters and returns an integer value. Below are different values returned by fork().
+Negative Value: creation of a child process was unsuccessful.
+Zero: Returned to the newly created child process.
+Positive value: Returned to parent or caller. The value contains process ID of newly created child process.
+
+
+fork() Call:
+
+int pid = fork(); creates a new process. This new process is a child of the calling process.
+
+fork() returns a process ID (PID):
+
+-> Positive value (PID of the child process) to the parent.
+-> Zero to the child process.
+-> Negative value if there is an error.
+
+
+-------------------
+
+#include <stdio.h>      // Standard input/output library
+#include <stdlib.h>     // Standard library for functions like exit()
+#include <sys/types.h>  // Definitions for data types used in system calls
+#include <sys/wait.h>   // Macros related to process termination, including wait()
+
+int main() 
+{
+    int id;             // Variable to store the process ID returned by wait()
+    int pid = fork();   // Create a new process
+
+    if (pid > 0)        // Check if this is the parent process (pid > 0)
+    {
+        // Parent process block
+        printf("parent: child=%d\n", pid);  // Output the PID of the child process
+        id = wait();                        // Wait for the child process to terminate and store the PID
+        printf("child %d is done\n", id);   // Print the PID of the terminated child process
+    } 
+    else if (pid == 0)  // Check if this is the child process (pid == 0)
+    {
+        // Child process block
+        printf("child: exiting\n"); // Output a message indicating that the child process is about to exit
+        exit(0);                    // Terminate the child process with exit status 0
+    } 
+    else                // Check if fork() failed (pid < 0)
+    {
+        // Error handling block
+        printf("fork error\n"); // Print an error message if fork() fails
+    }
+
+    return 0;           // Return 0 to indicate successful program execution
+}
+
+
+
+---------------Output------------------
+
+
+----------------
+
+Flow Summary
+Program Start:
+
+The program starts and includes the necessary headers.
+Variables are declared.
+Process Creation:
+
+The fork() system call is made.
+The process is split into parent and child.
+Parent Process Path:
+
+If pid > 0, the parent process prints the child's PID, waits for the child to terminate, and then prints the PID of the terminated child.
+Child Process Path:
+
+If pid == 0, the child process prints a message and exits with a status of 0.
+Error Handling Path:
+
+If pid < 0, an error message is printed indicating that fork() failed.
+Program Ends:
+
+The program returns 0 to indicate successful execution.
+By following this flow, the program demonstrates how to create a child process, handle different execution paths for parent and child processes, and manage process termination using wait().
+
+----------------------
